@@ -1,0 +1,28 @@
+{
+  "_note": "Well-known accounts used for lookalike detection. Every mainnet entry was checked to exist on-chain (see test/known-accounts.live.js). Add your own with a pull request.",
+  "mainnet": {
+    "wrap.near": "Wrapped NEAR (wNEAR)",
+    "intents.near": "NEAR Intents verifier",
+    "v2.ref-finance.near": "Rhea (Ref Finance) DEX",
+    "dclv2.ref-labs.near": "Rhea (Ref) concentrated-liquidity DEX",
+    "token.v2.ref-finance.near": "REF token",
+    "aggregatedex.near": "DEX aggregator router",
+    "usdt.tether-token.near": "USDT (Tether)",
+    "17208628f84f5d6ad33f0da3bbbeb27ffcb398eac501a31bd6ad2011e36133a1": "USDC (Circle)",
+    "aurora": "Aurora",
+    "meta-pool.near": "Meta Pool (stNEAR)",
+    "linear-protocol.near": "LiNEAR",
+    "contract.main.burrow.near": "Burrow / Rhea lending",
+    "token.sweat": "SWEAT token",
+    "blackdragon.tkn.near": "BLACKDRAGON token",
+    "meta-token.near": "META token"
+  },
+  "testnet": {
+    "wrap.testnet": "Wrapped NEAR (testnet)",
+    "ref-finance-101.testnet": "Ref Finance (testnet)"
+  },
+  "trustedRoots": {
+    "mainnet": ["ref-finance.near", "ref-labs.near", "tether-token.near", "burrow.near", "meta-pool.near", "linear-protocol.near", "aurora", "sweat"],
+    "testnet": []
+  }
+}

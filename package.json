@@ -1,0 +1,23 @@
+{
+  "name": "near-counterparty-shield",
+  "version": "0.1.0",
+  "description": "Counterparty checks for AI agents that pay on NEAR: allow / warn / block, with reasons, before anything is signed.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "check": "node src/cli.js",
+    "demo": "node agent/demo-attack.js",
+    "test": "node --test \"test/*.test.js\"",
+    "build:contract": "node scripts/build-contract.js",
+    "testnet:setup": "node scripts/testnet-setup.js",
+    "testnet:lock": "node scripts/testnet-lock.js",
+    "testnet:withdraw": "node scripts/testnet-withdraw.js"
+  },
+  "dependencies": {
+    "near-api-js": "7.3.1"
+  }
+}
