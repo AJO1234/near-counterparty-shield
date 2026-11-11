@@ -31,6 +31,7 @@
   .try { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:12px; }
   .try button { background: var(--card); color: var(--ink); border:1px solid var(--line); font-weight:500; font-size:13px; padding:6px 10px; }
   .foot { margin-top: 28px; }
+  ul.neutral { color: var(--muted); list-style: none; padding-left: 4px; }
   a { color: var(--accent); }
   pre { overflow:auto; font-size: 12px; background: var(--bg); padding: 12px; border-radius: 8px; }
 </style>
@@ -77,6 +78,12 @@ $('f').addEventListener('submit', async (e) => {
       <div class="verdict ${r.verdict}">${r.verdict}</div>
       <div class="muted"><code>${esc(r.receiver)}</code> · ${esc(r.network)} · risk score ${r.score ?? 'n/a'}</div>
       ${list(r.reasons, '⚠')}${list(r.reassurance, '✓')}
+      ${(() => {
+        // Neutral facts (0 points) still show what was checked, so an ALLOW is never "empty".
+        const neutral = r.signals.filter((s) => !s.points && s.id !== 'amount');
+        return neutral.length ? '<ul class="neutral">' + neutral.map((s) => `<li>· ${esc(s.label)}: ${esc(s.detail)} <span class="muted">(${esc(s.source)})</span></li>`).join('') + '</ul>' : '';
+      })()}
+      <p class="muted">${r.signals.filter((s) => s.id !== 'amount').length} checks ran${r.cached ? ' (cached result)' : ''}. ⚠ adds risk, ✓ lowers it, · neutral.</p>
       ${r.unavailable.length ? '<p class="muted">Not checked: ' + r.unavailable.map((u) => esc(u.label + ' (' + u.reason + ')')).join('; ') + '</p>' : ''}
       <details><summary>All signals (JSON)</summary><pre>${esc(JSON.stringify(r, null, 2))}</pre></details>
     </div>`;
