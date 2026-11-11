@@ -17,6 +17,10 @@ agent ──"pay 10 NEAR to foundation-near.near"──▶ Shield ──BLOCK: i
 agent ──"pay 0.5 NEAR to near-foundation.near"─▶ Shield ──ALLOW + ticket ──▶ vault.pay(ticket) ──▶ on-chain signature + caps ──▶ transfer
 ```
 
+## Try it now
+
+**Live checker: https://joshforensics.duckdns.org/shield/**. Type any NEAR mainnet account, or click one of the examples. It's the same code as this repo (`npm start`), rate-limited to 20 checks per minute per visitor.
+
 ## Live on NEAR testnet
 
 The vault contract is deployed and locked, and the full attack demo has been run against it:
