@@ -56,9 +56,28 @@ function requireWriteAuth(req) {
   }
 }
 
+// Per-client rate limit for the routes that hit the chain. Every check costs
+// shared, free upstream budget, so a public instance must not be a free proxy.
+const LIMIT_PER_MIN = Number(process.env.SHIELD_RATE_LIMIT_PER_MIN || 20);
+const hits = new Map(); // ip -> [timestamps]
+function rateLimited(req) {
+  // Behind a local reverse proxy, trust its X-Real-IP; otherwise use the socket.
+  const local = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(req.socket.remoteAddress);
+  const ip = (local && req.headers['x-real-ip']) || req.socket.remoteAddress;
+  const now = Date.now();
+  const recent = (hits.get(ip) || []).filter((t) => now - t < 60_000);
+  recent.push(now);
+  hits.set(ip, recent);
+  if (hits.size > 5000) hits.clear();
+  return recent.length > LIMIT_PER_MIN;
+}
+
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
   try {
+    if (['/v1/check', '/v1/ticket'].includes(url.pathname) && rateLimited(req)) {
+      return send(res, 429, { error: `rate limit: ${LIMIT_PER_MIN} checks per minute` });
+    }
     if (req.method === 'OPTIONS') return send(res, 204, '');
     if (req.method === 'GET' && url.pathname === '/') return send(res, 200, PAGE, 'text/html; charset=utf-8');
     if (req.method === 'GET' && url.pathname === '/health') {

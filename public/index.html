@@ -28,6 +28,10 @@
   .muted { color: var(--muted); font-size: 13px; }
   code { font-family: ui-monospace, Consolas, monospace; font-size: 13px; word-break: break-all; }
   details summary { cursor: pointer; color: var(--muted); }
+  .try { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-top:12px; }
+  .try button { background: var(--card); color: var(--ink); border:1px solid var(--line); font-weight:500; font-size:13px; padding:6px 10px; }
+  .foot { margin-top: 28px; }
+  a { color: var(--accent); }
   pre { overflow:auto; font-size: 12px; background: var(--bg); padding: 12px; border-radius: 8px; }
 </style>
 </head>
@@ -40,18 +44,33 @@
     <input id="amount" placeholder="NEAR" inputmode="decimal">
     <button>Check</button>
   </form>
+  <div class="try">
+    <span class="muted">Try:</span>
+    <button type="button" data-r="wrap.near">wrap.near</button>
+    <button type="button" data-r="ref-finance-v2.near" data-a="10">ref-finance-v2.near · 10 NEAR</button>
+    <button type="button" data-r="wrap.near.claims.near">wrap.near.claims.near</button>
+    <button type="button" data-r="intents.near">intents.near</button>
+    <button type="button" data-r="dex.intear.near" data-a="10">dex.intear.near · 10 NEAR</button>
+  </div>
   <div id="out"></div>
+  <p class="muted foot">Live NEAR mainnet data. Source, vault contract and attack demo: <a href="https://github.com/AJO1234/near-counterparty-shield">github.com/AJO1234/near-counterparty-shield</a></p>
 </main>
 <script>
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+document.querySelectorAll('.try button').forEach((b) => b.addEventListener('click', () => {
+  $('receiver').value = b.dataset.r;
+  $('amount').value = b.dataset.a || '';
+  $('f').requestSubmit();
+}));
 $('f').addEventListener('submit', async (e) => {
   e.preventDefault();
   const q = new URLSearchParams({ receiver: $('receiver').value.trim() });
   if ($('amount').value) q.set('amount', $('amount').value);
   $('out').innerHTML = '<div class="card muted">Checking on-chain…</div>';
   try {
-    const r = await (await fetch('/v1/check?' + q)).json();
+    // Relative URL, so the page also works when served under a path like /shield/.
+    const r = await (await fetch('v1/check?' + q)).json();
     if (r.error) throw new Error(r.error);
     const list = (xs, sign) => xs.length ? '<ul>' + xs.map((x) => `<li>${sign} ${esc(x)}</li>`).join('') + '</ul>' : '';
     $('out').innerHTML = `<div class="card">
