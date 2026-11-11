@@ -8,7 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "node src/server.js",
+    "start": "node src/start.js",
     "check": "node src/cli.js",
     "demo": "node agent/demo-attack.js",
     "test": "node --test \"test/*.test.js\"",
