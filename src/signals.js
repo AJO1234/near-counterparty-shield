@@ -105,6 +105,7 @@ export async function collectReceiverSignals(receiver) {
     facts.isContract = account.code_hash !== EMPTY_CODE;
     facts.codeHash = account.code_hash;
     facts.storageBytes = account.storage_usage;
+    add({ id: 'exists', label: 'Account exists', points: 0, detail: `Balance ${facts.balanceNear} NEAR.`, source: 'NEAR RPC' });
     if (facts.isContract) {
       add({ id: 'contract', label: 'Receiver is a smart contract', points: 0, detail: `Code hash ${account.code_hash}. Payments to a contract are handled by its code, not a person.`, source: 'NEAR RPC' });
     }
@@ -135,6 +136,8 @@ export async function collectReceiverSignals(receiver) {
       });
     } else if (facts.isContract && full === 0) {
       add({ id: 'locked', label: 'Contract is locked', points: -10, detail: 'No full-access keys: the code can only change through the contract itself.', source: 'NEAR RPC' });
+    } else {
+      add({ id: 'keys', label: 'Who controls it', points: 0, detail: `${full} full-access key(s) and ${keys.length - full} limited key(s): a normal, spendable account.`, source: 'NEAR RPC' });
     }
   } catch (e) {
     miss('access-keys', 'Access keys', e);
